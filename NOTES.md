@@ -13,7 +13,7 @@ Users RSVP to events
 Users have profile page that shows all of their RSVP'd events
 
 
-# Possible add ons
+## Possible add ons
 
 Users can add friends and view their profile pages
 
@@ -21,6 +21,6 @@ App recommends similar events
 
 Reminders for events (Maybe integration with Google Calendar?)
 
-# Testing
+## Testing
 
 Test Drvien Development => RSpec/Capybara
