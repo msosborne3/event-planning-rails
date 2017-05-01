@@ -4,12 +4,12 @@ require 'date'
 RSpec.describe User, type: :model do
 
   let(:user) { FactoryGirl.create(:user) }
-  #let(:upcoming_event) { FactoryGirl.create(:event, date: (Date.today + 1), user_id: user.id) }
-  #let(:past_event) { FactoryGirl.create(:event, date: (Date.today - 1), user_id: user.id) }
-  
-  let(:event) { FactoryGirl.create(:event, user_id: user.id) }
+  let(:upcoming_event) { FactoryGirl.create(:event, time: (Time.now + 2)) }
+  let(:past_event) { FactoryGirl.create(:event, time: (Time.now - 2)) }
 
-  it { should have_many (:rsvp_events) }
+  before(:each) {}
+
+  it { should have_many (:event_rsvps) }
 
   it { should have_many (:events) }
 
@@ -19,34 +19,30 @@ RSpec.describe User, type: :model do
     end
   end 
 
-  # TO DO: implement event with a .rsvp method to add it to a user's list
-  # Then test for it
+  context 'rsvp_events' do
+    before(:each) do 
+      upcoming_event.add_rsvp(user)
+      past_event.add_rsvp(user) 
+    end
 
-  #describe '.upcoming_events' do
-  #  it 'should return a list of events that a user has RSVPd to but have not happened' do
-  #    expect(user.upcoming_events).to include(upcoming_event)
-  #  end
-#
-  #  it 'should not include past events' do
-  #    expect(user.upcoming_events).to_not include(past_event)
-  #  end
-  #end
+    describe '.upcoming_events' do
+      it 'should return a list of events that a user has RSVPd to but have not happened' do
+        expect(user.upcoming_events).to include(upcoming_event)
+      end
 
-  #describe '.past_events' do
-  #  it 'should return a list of events that a user has RSVPd to and have already happened' do
-  #    expect(user.past_events).to include(past_event)
-  #  end
-#
-  #  it 'should not include upcoming events events' do
-  #    expect(user.past_events).to_not include(upcoming_event)
-   # end
-  #end
+      it 'should not include past events' do
+        expect(user.upcoming_events).to_not include(past_event)
+      end
+    end
 
+    describe '.past_events' do
+      it 'should return a list of events that a user has RSVPd to and have already happened' do
+        expect(user.past_events).to include(past_event)
+      end
 
-  describe '.events' do
-    it 'should list all of a users created events' do
-      expect(user.events.length).to eq(1)
+      it 'should not include upcoming events events' do
+        expect(user.past_events).to_not include(upcoming_event)
+      end
     end
   end
-
 end
