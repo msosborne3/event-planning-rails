@@ -5,17 +5,36 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :events
-  has_many :rsvp_events, class_name: 'Event'
+  has_many :event_rsvps
 
   def full_name
     full_name = first_name + ' ' + last_name
   end
 
   def upcoming_events
-    self.events.map { |event| event.date >= today }
+    upcoming = []
+    self.event_rsvps.each do |rsvp|
+      event = Event.find_by(id: rsvp.event_id)
+      if event.time >= Time.now
+        upcoming << event
+      end
+    end
+    upcoming
   end
 
   def past_events
-    self.events.map { |event| event.date < today }
+    past = []
+    self.event_rsvps.each do |rsvp|
+      event = Event.find_by(id: rsvp.event_id)
+      if event.time < Time.now
+        past << event
+      end
+    end
+    past
+  end
+
+  def attending?(event)
+    event = self.event_rsvps.find_by(event_id: event.id)
+    event ? true : false
   end
 end
